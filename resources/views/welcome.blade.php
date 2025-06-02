@@ -88,7 +88,7 @@
                                 </span>
                             </span> -->
                             <span>
-                                Heb je nog geen account? 
+                                Heb je nog geen account?
                                 <a href="https://laracasts.com" target="_blank" class="inline-flex items-center space-x-1 font-medium underline underline-offset-4 text-[#f53003] dark:text-[#FF4433] ml-1">
                                     <span> Registreer</span>
                                     <svg
