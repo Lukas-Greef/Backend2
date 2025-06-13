@@ -2,6 +2,7 @@
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\GameController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -15,6 +16,10 @@ Route::post('/registreer', [RegisterController::class, 'register']);
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-Route::get('/dashboard', function () {
-return 'Welkom op het dashboard!';
-})->middleware('auth');
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', [GameController::class, 'dashboard'])->name('dashboard');
+    Route::post('/games/create', [GameController::class, 'createGame'])->name('games.create');
+    Route::post('/games/{game}/join', [GameController::class, 'joinGame'])->name('games.join');
+    Route::get('/games/{game}/play', [GameController::class, 'play'])->name('games.play');
+    Route::post('/games/{game}/choose', [GameController::class, 'submitChoice'])->name('games.choose');
+});

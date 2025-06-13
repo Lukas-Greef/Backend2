@@ -1,29 +1,43 @@
-<!DOCTYPE html>
-<html>
+@extends('layouts.app')
 
-<head>
-    <meta charset='utf-8'>
-    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <title>Page Title</title>
-    <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <link rel='stylesheet' src='app.css'>
-    <script src='main.js'></script>
-</head>
+@section('content')
+    <div class="max-w-3xl mx-auto p-6 bg-white rounded shadow-md">
+        <h1 class="text-3xl font-bold mb-6 text-center">Lobby's / Games</h1>
 
-<body>
-    <header>
-        <h1>Dashboard</h1>
-    </header>
-    <main>
-        <section>
-            <div>
-                <h2>Welcome to the Dashboard</h2>
-            </div>
-        </section>
-    </main>
-    <footer>
+        <form action="{{ route('games.create') }}" method="POST" class="mb-6 text-center">
+            @csrf
+            <button
+                type="submit"
+                class="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 transition"
+            >
+                Nieuwe game aanmaken
+            </button>
+        </form>
 
-    </footer>
-</body>
+        @if($games->count())
+            <ul class="space-y-4">
+                @foreach($games as $game)
+                    <li class="flex justify-between items-center p-4 border rounded shadow-sm hover:shadow-md transition">
+                        <span class="font-semibold">Game #{{ $game->id }}</span>
 
-</html>
+                        @if($game->player_one_id != auth()->id())
+                            <form action="{{ route('games.join', $game->id) }}" method="POST" class="inline">
+                                @csrf
+                                <button
+                                    type="submit"
+                                    class="bg-green-500 text-white px-4 py-1 rounded hover:bg-green-600 transition"
+                                >
+                                    Join game
+                                </button>
+                            </form>
+                        @else
+                            <span class="italic text-gray-600">(Je hebt deze game aangemaakt)</span>
+                        @endif
+                    </li>
+                @endforeach
+            </ul>
+        @else
+            <p class="text-center text-gray-500 mt-8">Geen lobby's beschikbaar. Maak er een aan!</p>
+        @endif
+    </div>
+@endsection
