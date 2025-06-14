@@ -1,24 +1,35 @@
-<h1 class="text-xl font-bold mb-4">Steen Papier Schaar</h1>
+@extends('layouts.app')
 
-@if (!$game->player_one_choice || !$game->player_two_choice)
-    <p>Het is jouw beurt, {{ $user->name }}!</p>
+@section('content')
+    <h1>Steen Papier Schaar</h1>
 
-    @if (
-        ($game->player_one_id == $user->id && !$game->player_one_choice) ||
-        ($game->player_two_id == $user->id && !$game->player_two_choice)
-    )
-        <form method="POST" action="{{ route('games.choose', $game->id) }}">
-            @csrf
-            <button name="choice" value="rock">🪨 Steen</button>
-            <button name="choice" value="paper">📄 Papier</button>
-            <button name="choice" value="scissors">✂️ Schaar</button>
-        </form>
-    @else
-        <p>Wachten op de andere speler...</p>
+    @if(session('error'))
+        <div style="color:red">{{ session('error') }}</div>
     @endif
-@else
-    <p><strong>Spel is afgelopen!</strong></p>
-    <p>Speler 1 koos: {{ $game->player_one_choice }}</p>
-    <p>Speler 2 koos: {{ $game->player_two_choice }}</p>
-    <p><strong>Resultaat: {{ $game->result }}</strong></p>
-@endif
+
+    @if (!$game->player_one_choice || !$game->player_two_choice)
+        @if (
+            // Speler 1: mag kiezen als hij nog niet gekozen heeft
+            ($game->player_one_id == $user->id && !$game->player_one_choice)
+            // Speler 2: mag kiezen als speler 1 al gekozen heeft en hijzelf nog niet
+            || ($game->player_two_id == $user->id && $game->player_one_choice && !$game->player_two_choice)
+        )
+            <form action="{{ route('games.choice', $game->id) }}" method="POST">
+                @csrf
+                <select name="choice" required>
+                    <option value="">Kies...</option>
+                    <option value="rock">Steen</option>
+                    <option value="paper">Papier</option>
+                    <option value="scissors">Schaar</option>
+                </select>
+                <button type="submit">Indienen</button>
+            </form>
+        @else
+            <p>Wachten op de andere speler...</p>
+        @endif
+    @else
+        <p><strong>Resultaat: {{ $game->result }}</strong></p>
+        <p>Speler 1 koos: {{ ucfirst($game->player_one_choice) }}</p>
+        <p>Speler 2 koos: {{ ucfirst($game->player_two_choice) }}</p>
+    @endif
+@endsection
