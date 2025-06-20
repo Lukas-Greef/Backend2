@@ -66,7 +66,6 @@ $game->save();
 
 return redirect()->route('games.play', $game->id);
 }
-
 private function determineWinner($p1, $p2)
 {
 if ($p1 === $p2) return 'Gelijkspel';
