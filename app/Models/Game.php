@@ -14,8 +14,21 @@ class Game extends Model
         'result',
     ];
 
-    public function isFinished()
+    public function isFinished(): bool
     {
-        return $this->player_one_choice && $this->player_two_choice;
+        return (bool) ($this->player_one_choice && $this->player_two_choice);
+    }
+
+    // bepaal de winnaar van het spel
+    public function determineWinner(): string
+    {
+        if ($this->player_one_choice === $this->player_two_choice) {
+            return 'Gelijkspel';
+        }
+
+        return match ([$this->player_one_choice, $this->player_two_choice]) {
+            ['rock', 'scissors'], ['paper', 'rock'], ['scissors', 'paper'] => 'Speler 1 wint',
+            default => 'Speler 2 wint',
+        };
     }
 }
